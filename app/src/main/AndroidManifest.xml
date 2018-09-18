@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,4 +18,13 @@
         </activity>
     </application>
 
+    <meta-data
+        android:name="AA_DB_NAME"
+        android:value="Notelin.db" />
+    <meta-data
+        android:name="AA_DB_VERSION"
+        android:value="1" />
+    <meta-data
+        android:name="AA_MODELS"
+        android:value="ru.axdar.notekotlin.mvp.models.Note" />
 </manifest>
