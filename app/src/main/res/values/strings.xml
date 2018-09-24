@@ -18,4 +18,5 @@
         <item>Информация</item>
         <item>Удалить</item>
     </string-array>
+    <string name="title_activity_note">NoteActivity</string>
 </resources>
