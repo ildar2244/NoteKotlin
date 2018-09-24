@@ -5,6 +5,8 @@ import com.arellomobile.mvp.MvpPresenter
 import ru.axdar.notekotlin.mvp.models.Note
 import ru.axdar.notekotlin.mvp.models.NoteDao
 import ru.axdar.notekotlin.mvp.views.MainView
+import ru.axdar.notekotlin.utils.getNotesSortMethodName
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -26,6 +28,21 @@ class MainPresenter : MvpPresenter<MainView>() {
     lateinit var mNoteDao: NoteDao
     lateinit var mNotesList: MutableList<Note>
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        loadAllNotes()
+    }
 
+    fun loadAllNotes() {
+        mNotesList = mNoteDao.loadAllNotes()
+        Collections.sort(mNotesList, getCurrentSortMethod())
+        viewState.onNotesLoaded(mNotesList)
+    }
+
+    fun getCurrentSortMethod(): SortNotesBy {
+        val defaultSortMethodName = SortNotesBy.DATE.toString()
+        val currentSortMethodName = getNotesSortMethodName(defaultSortMethodName)
+        return SortNotesBy.valueOf(currentSortMethodName)
+    }
 
 }
