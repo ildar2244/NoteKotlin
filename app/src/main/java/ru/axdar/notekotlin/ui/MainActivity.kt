@@ -2,9 +2,13 @@ package ru.axdar.notekotlin.ui
 
 import kotlinx.android.synthetic.main.activity_main.*
 import android.os.Bundle
+import android.support.v7.widget.SearchView
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import com.afollestad.materialdialogs.MaterialDialog
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.pawegio.kandroid.onQueryChange
 import ru.axdar.notekotlin.R
 import ru.axdar.notekotlin.mvp.common.MvpAppCompatActivity
 import ru.axdar.notekotlin.mvp.models.Note
@@ -51,8 +55,31 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+
+        initSearchView(menu)
+        return true
+    }
+
+    private fun initSearchView(menu: Menu) {
+        var searchViewMenuItem = menu.findItem(R.id.action_search)
+        var searchView = searchViewMenuItem.actionView as SearchView
+        searchView.onQueryChange { query -> mPresenter.search(query) }
+        searchView.setOnCloseListener { mPresenter.search(""); false }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.menuDeleteAllNotes -> mPresenter.deleteAllNotes()
+            R.id.menuSortByName -> mPresenter.sortNotesBy(MainPresenter.SortNotesBy.NAME)
+            R.id.menuSortByDate -> mPresenter.sortNotesBy(MainPresenter.SortNotesBy.DATE)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onSearchResult(notes: List<Note>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        rvNotesList.adapter = NotesAdapter(notes)
     }
 
     override fun onAllNotesDeleted() {
