@@ -6,8 +6,10 @@ import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.pawegio.kandroid.longToast
 import com.pawegio.kandroid.onQueryChange
 import ru.axdar.notekotlin.R
 import ru.axdar.notekotlin.mvp.common.MvpAppCompatActivity
@@ -83,11 +85,13 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     }
 
     override fun onAllNotesDeleted() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        updateView()
+        Toast.makeText(this, R.string.all_notes_is_deleted, Toast.LENGTH_LONG).show()
     }
 
     override fun onNoteDeleted() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        updateView()
+        Toast.makeText(this, R.string.note_is_deleted, Toast.LENGTH_LONG).show()
     }
 
     override fun showNoteInfoDialog(noteInfo: String) {
