@@ -5,7 +5,11 @@ import android.content.Intent
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import ru.axdar.notekotlin.NoteApp
+import ru.axdar.notekotlin.bus.NoteDeleteAction
+import ru.axdar.notekotlin.bus.NoteEditAction
 import ru.axdar.notekotlin.mvp.models.Note
 import ru.axdar.notekotlin.mvp.models.NoteDao
 import ru.axdar.notekotlin.mvp.views.MainView
@@ -33,6 +37,11 @@ class MainPresenter : MvpPresenter<MainView>() {
     @Inject
     lateinit var mNoteDao: NoteDao
     lateinit var mNotesList: MutableList<Note>
+
+    init {
+        NoteApp.graph.inject(this)
+        EventBus.getDefault().register(this)
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -111,6 +120,23 @@ class MainPresenter : MvpPresenter<MainView>() {
 
     fun hideNoteInfoDialog() {
         viewState.hideNoteInfoDialog()
+    }
+
+    @Subscribe
+    fun onNoteEdit(action: NoteEditAction) {
+        val notePosition = action.position
+        mNotesList[notePosition] = mNoteDao.getNoteById(mNotesList[notePosition].id)
+        sortNotesBy(getCurrentSortMethod())
+    }
+
+    @Subscribe
+    fun onNoteDelete(action: NoteDeleteAction) {
+        mNotesList.removeAt(action.position)
+        viewState.updateView()
+    }
+
+    fun showNoteInfo(position: Int) {
+        viewState.showNoteInfoDialog(mNotesList[position].getInfo())
     }
 
 }
